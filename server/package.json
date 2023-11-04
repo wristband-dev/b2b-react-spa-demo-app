@@ -1,0 +1,48 @@
+{
+  "name": "b2b-expressjs-demo-app--server",
+  "description": "NodeJS server backend that orchestrates API requests from the multi-tenant demo single page app.",
+  "author": "Wristband",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=16.13.1",
+    "npm": ">=8.1.2"
+  },
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "reset-db": "node reset-db.js",
+    "start": "NODE_ENV=production PORT=6001 node -r dotenv/config index.js",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix"
+  },
+  "dependencies": {
+    "@hapi/iron": "^7.0.1",
+    "agentkeepalive": "^4.1.3",
+    "async": "^3.1.0",
+    "async-retry": "^1.3.3",
+    "axios": "^1.3.4",
+    "cookie-parser": "^1.4.6",
+    "csrf": "^3.1.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.16.4",
+    "express-validator": "^6.15.0",
+    "iron-session": "^6.3.1",
+    "lowdb": "^1.0.0",
+    "moment": "^2.29.4",
+    "nanoid": "^3.1.32",
+    "stoppable": "^1.1.0",
+    "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-node": "^4.1.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.22",
+    "prettier": "^2.8.8"
+  }
+}
