@@ -24,7 +24,6 @@ export const fetchSessionRole = async function () {
 
 export const fetchSessionUser = async function () {
   const user = await backendService.getUser(localStorage.getItem(LS_KEY_USER_ID), util.bearerToken());
-  console.log(`user: ${JSON.stringify( user)}`)
   return user;
 };
 
@@ -65,7 +64,6 @@ export const getInitialSessionData = async function () {
     })[0].minimumLength;
     const requiredFields = userSchema.items[0].item.baseProfile.required;
     const isApitopiaIdp = identityProviderName === APITOPIA_IDP_NAME;
-    //console.log(`RequiredFields : ${JSON.stringify(requiredFields)}`);
 
     return {
       user,
@@ -118,18 +116,15 @@ export const fetchSessionConfigs = async function () {
 
 export const updateSessionCompany = async function (company) {
   const { id, ...updatedCompany } = company;
-  console.log(`updatedCompany ${JSON.stringify(company)}`);
   return await backendService.updateTenant(id, updatedCompany, util.bearerToken());
 };
 
 export const updateSessionUser = async function (user) {
   const { id, ...updatedUser } = user;
-  //console.log(`updatedUser ${JSON.stringify(updatedUser)}`)
   const filteredObj = (obj) =>
       Object.entries(obj)
           .filter(([_, value]) => !!value || typeof value === "boolean")
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   const filteredUserUpdate = filteredObj(updatedUser);
-  //console.log(`filteredUserUpdate: ${JSON.stringify(filteredUserUpdate)}`);
   return await backendService.updateUser(id, filteredUserUpdate, util.bearerToken());
 };

@@ -24,7 +24,6 @@ export const getTenant = async function(tenantId, requestConfig) {
 export const getAssignableRoleOptions = async function (tenantId, requestConfig) {
   const queryString = 'include_application_roles=true&fields=id,displayName&sort_by=displayName:asc';
   const response = await backendClientWithInterceptor.get(`/v1/tenants/${tenantId}/roles?${queryString}`, requestConfig);
-  // console.log(`response : ${JSON.stringify(response.data)}`)
   return response.data.items.map((role) => {
     return { value: role.id, label: role.displayName };
   });
@@ -74,7 +73,6 @@ export const exchangeAuthCodeForTokens = async function(code, redirectUri, codeV
     client_id: CLIENT_ID
   });
 
-  //console.log(`authData: ${authData}`);
   const response = await backendClient.post('/v1/oauth2/token', authData, BASIC_AUTH_AXIOS_CONFIG);
   return response.data;
 };
@@ -157,7 +155,6 @@ export const refreshAccessToken = async function (refreshToken) {
 };
 
 export const requestEmailChange = async function (userId, newEmail, requestConfig) {
-  console.log(`requestEmailChange : ${userId}, ${newEmail} `)
   await backendClientWithInterceptor.post('/v1/change-email/request-email-change', { userId, newEmail }, requestConfig);
 };
 

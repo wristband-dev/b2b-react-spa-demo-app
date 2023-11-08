@@ -21,7 +21,6 @@ import { sessionHooks } from 'hooks';
 import { util } from 'utils';
 
 export function ProfileSettingsForm({ sessionConfigs }) {
-  //console.log(`sessionConfig : ${JSON.stringify(sessionConfigs)}`);
   const { data: user, error, isFetching, isInitialLoading } = sessionHooks.useSessionUser();
   const { mutate: updateUser } = sessionHooks.useUpdateSessionUser();
   const { usernameRequired, requiredFields } = sessionConfigs;
@@ -32,7 +31,6 @@ export function ProfileSettingsForm({ sessionConfigs }) {
   const [username, setUsername] = useState(user.username ?? '');
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber ?? '');
   const [birthdate, setBirthdate] = useState(user.birthdate ? parseISO(user.birthdate) : null);
-  //console.log(`requiredFields: ${JSON.stringify(requiredFields)}`);
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.up('sm'));
   const flexInputPadding = isSmall ? '0.5rem' : '0';

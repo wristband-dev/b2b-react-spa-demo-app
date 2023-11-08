@@ -3,22 +3,8 @@ import { util } from '../utils';
 import { backendService } from '../services';
 import {LS_KEY_ACCESS_TOKEN, LS_KEY_EXPIRES_AT, LS_KEY_REFRESH_TOKEN} from "../utils/constants";
 
-// TODO: cannot do keepAlive without hacking it
-// useeffect(() => {
-//     const interval = setinterval(() => axios.get(url), 5 * 60 * 1000);
-//     return () => clearinterval(interval);
-//   });
-
 const backendClientWithInterceptor = axios.create({
   baseURL: `https://${import.meta.env.VITE_APPLICATION_DOMAIN}/api`,
-
-  // httpAgent: new http.Agent({
-  //   maxSockets: 100,
-  //   maxFreeSockets: 10,
-  //   timeout: 60000,
-  //   freeSocketTimeout: 30000
-  // }),
-
 });
 
 /* APITOPIA_TOUCHPOINT - AUTHENTICATION */
@@ -65,7 +51,6 @@ export async function refreshIfExpired(config) {
     const accessToken = localStorage.getItem(LS_KEY_ACCESS_TOKEN);
     const refreshToken = localStorage.getItem(LS_KEY_REFRESH_TOKEN);
     const expiresAt = localStorage.getItem(LS_KEY_EXPIRES_AT);
-    //console.log(`tokenData: ${accessToken}, ${refreshToken}, ${expiresAt}`);
     if (!accessToken || !expiresAt || !refreshToken) {
         util.redirectToLogin();
     }
@@ -76,10 +61,8 @@ export async function refreshIfExpired(config) {
     // pre-emptive refreshToken
     try {
         const tokenData = await refreshExpiredToken();
-        //tryRefreshToken(1000, 2);
 
         if( tokenData != null){
-            //console.log(`tokenData: ${JSON.stringify(tokenData)}`);
             localStorage.setItem(LS_KEY_ACCESS_TOKEN, tokenData.access_token);
             localStorage.setItem(LS_KEY_EXPIRES_AT, util.calculateExpTimeWithBuffer(tokenData.expires_in))
             localStorage.setItem(LS_KEY_REFRESH_TOKEN, tokenData.refresh_token);
