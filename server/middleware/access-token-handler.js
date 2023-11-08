@@ -8,7 +8,7 @@ const accessTokenHandler = async function (req, res, next) {
 
   const accessTokenHeader =  req.headers['authorization'];
   const accessToken = bearerToAccessToken(accessTokenHeader);
-  if (!accessToken || isAccessTokenExpired(expiresAt)) {
+  if (!accessToken) {
     return res.status(401).send();
   } 
 

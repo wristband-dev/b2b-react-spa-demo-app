@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Defined routes for all API endpoint/non-static assets
-app.use('/api', session, routes);
+app.use('/api', routes);
 
 // Serve static assets if in production mode.
 if (NODE_ENV === 'production') {
