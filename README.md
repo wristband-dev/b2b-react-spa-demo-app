@@ -18,9 +18,9 @@ Below is a quick overview of how Invotastic for Business looks behind the scenes
 <br>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-dark-01.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light-01.png">
-  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light-01.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light.png">
+  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light.png">
 </picture>
 
 The entity model starts at the top with an application that encapsulates everything related to Invotastic for Business.  The application has the Wristband identity provider enabled by default so that all users can login with an email and a password.  The application has one OAuth2 client through which users will be authenticated.  In this case, the client is a React single page app.
