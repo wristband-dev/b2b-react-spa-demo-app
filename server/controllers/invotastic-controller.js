@@ -12,7 +12,7 @@ const {
   NOT_FOUND,
   InvoiceStatus,
 } = require('../utils/constants');
-const { addressToTextBlock, bearerToken, hasAccessToApi } = require('../utils/util');
+const { addressToTextBlock, hasAccessToApi } = require('../utils/util');
 
 exports.createInvoice = async (req, res, next) => {
   const accessTokenHeader =  req.headers['authorization'];

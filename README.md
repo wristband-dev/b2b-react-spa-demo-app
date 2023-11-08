@@ -18,9 +18,9 @@ Below is a quick overview of how Invotastic for Business looks behind the scenes
 <br>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light.png">
-  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-dark-01.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light-01.png">
+  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light-01.png">
 </picture>
 
 The entity model starts at the top with an application that encapsulates everything related to Invotastic for Business.  The application has the Wristband identity provider enabled by default so that all users can login with an email and a password.  The application has one OAuth2 client through which users will be authenticated.  In this case, the client is a React single page app.
@@ -36,9 +36,9 @@ Companies that signup with Invotastic for Business will be provisioned a tenant 
 <br>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-architecture-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-architecture-light.png">
-  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-architecture-dark-01.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-architecture-light-01.png">
+  <img alt="entity model" src="https://assets.wristband.dev/docs/b2b-react-spa-demo-app/b2b-react-spa-demo-app-entity-model-light-01.png">
 </picture>
 
 The NodeJS server with Express is the Invotastic-specific backend containing all the APIs for interacting with Invoices. Therefore, the React app is tasked with doing all the heavy lifting when it comes to the following:
@@ -91,21 +91,29 @@ After your Wristband account is set up, log in to the Wristband dashboard.  Once
 
 - Step 1: App Type - B2B
 - Step 2: Subject Kind - Humans
-- Step 2: Client Framework - React
-- Step 3: Domain Format  - Choosing `Localhost` is fastest to setup. You can alternatively choose `Vanity Domain` if you want a production-like experience on your local machine for tenant-specific vanity domains, but this method will require additional setup.
+- Step 3: Client Framework - React
+- Step 4: Domain Format  - Choosing `Localhost` is fastest to setup. You can alternatively choose `Vanity Domain` if you want a production-like experience on your local machine for tenant-specific vanity domains, but this method will require additional setup.
 
 ### Apply your Wristband configuration values to the React configuration
 
-Upon completing the demo application setup, you will be prompted with values that you should copy into the environment variable configuration for this demo repository, which is located in `client/.env`.  Replace the following values:
+Upon completing the demo application setup, you will be prompted with values that you should copy into the environment variable configurations for this demo repository. There are two files to paste values into:
 
+#### Client-side Environment Variables
+
+In the React client portion of the project, replace the following values located in `client/.env`:
+- `VITE_APPLICATION_DOMAIN`
+- `VITE_DOMAIN_FORMAT`
+- `VITE_CLIENT_ID`
+
+In the NodeJS server portion of the project, replace the following values located in `server/.env`:
 - `APPLICATION_DOMAIN`
 - `DOMAIN_FORMAT`
 - `CLIENT_ID`
-- `CLIENT_SECRET`
 
 ### Run the application in "production" mode 
 
 Make sure you are in the root directory of this repository. 
+
 #### Install dependencies
 
 Now install all dependencies for both the React client application and the NodeJS server:

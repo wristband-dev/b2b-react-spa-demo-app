@@ -54,7 +54,6 @@ export function redirectToLogin() {
   const tenantDomainParam = query.get("tenant_domain");
   const returnUrl = query.get("return_url");
   const loginHint = query.get("login_hint");
-  //const { tenant_domain: tenantDomainParam, return_url: returnUrl } = query;
 
   //Make sure domain is valid before attempting OAuth2 Auth Code flow for tenant-level login.
   if (!IS_LOCALHOST && !isValidDomainSuffix(APPLICATION_DOMAIN)) {
@@ -73,9 +72,9 @@ export function redirectToLogin() {
   const state = createCryptoUniqueStr();
   const codeVerifier = createCryptoUniqueStr();
 
-
   const loginStateData = { state, tenantDomainName, codeVerifier, returnUrl };
   localStorage.setItem(LS_KEY_LOGIN_STATE_DATA, JSON.stringify(loginStateData));
+
   const queryParam = toQueryString({
     client_id: `${CLIENT_ID}`,
     response_type: 'code',
@@ -87,9 +86,8 @@ export function redirectToLogin() {
     nonce: createCryptoUniqueStr(),
     ...(loginHint && { login_hint: loginHint }),
   });
-  //console.log(`Authorize queryParam: ${queryParam}`);
-  window.location.href = `http://${tenantDomainName}-${APPLICATION_DOMAIN}/api/v1/oauth2/authorize?${queryParam}`;
 
+  window.location.href = `http://${tenantDomainName}-${APPLICATION_DOMAIN}/api/v1/oauth2/authorize?${queryParam}`;
 }
 
 export async function authCallback() {
@@ -139,16 +137,12 @@ export function calculateExpTimeWithBuffer(numOfSeconds) {
 export function saveTokenData(tokenData, userinfo, tenantDomainName) {
   // Set token data
   localStorage.setItem(LS_KEY_ACCESS_TOKEN, tokenData.access_token);
-  //console.log (`tokenData.expires_in :  ${tokenData.expires_in}`);
   localStorage.setItem(LS_KEY_EXPIRES_AT, calculateExpTimeWithBuffer(tokenData.expires_in))
   localStorage.setItem(LS_KEY_REFRESH_TOKEN, tokenData.refresh_token);
   localStorage.setItem(LS_KEY_USER_ID, userinfo.sub);
   localStorage.setItem(LS_KEY_TENANT_ID, userinfo.tnt_id);
   localStorage.setItem(LS_KEY_IDENTITY_PROVIDER_NAME, userinfo.idp_name);
   localStorage.setItem(LS_KEY_TENANT_DOMAIN_NAME, tenantDomainName);
-
-  // Set CSRF secret
-  //req.session.csrfSecret = csrfTokens.secretSync();
 };
 
 export function clearTokenData() {
@@ -161,9 +155,6 @@ export function clearTokenData() {
   localStorage.removeItem(LS_KEY_IDENTITY_PROVIDER_NAME);
   localStorage.removeItem(LS_KEY_TENANT_DOMAIN_NAME);
   localStorage.removeItem(LS_KEY_LOGIN_STATE_DATA);
-
-  // Set CSRF secret
-  //req.session.csrfSecret = csrfTokens.secretSync();
 };
 
 export function addressToTextBlock(address = {}) {
@@ -194,7 +185,6 @@ export function createCodeChallenge(codeVerifier) {
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
       .replace(/=/g, '');
-  //console.log(`inside CreateCodeChallenge base64(sha256): ${codeChallenge}`);
   return codeChallenge;
 }
 
@@ -237,9 +227,7 @@ export function isAccessTokenExpired(expiresAtMs) {
   if (!expiresAtMs) {
     return true;
   }
-  //console.log(`isAccessTokenExpired expiresAtMs: ${expiresAtMs}`);
   const currentTime = Date.now();
-  //console.log(`isAccessTokenExpired currentTimeMs: ${currentTime}`);
   return currentTime >= expiresAtMs;
 };
 

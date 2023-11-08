@@ -5,8 +5,6 @@ const express = require('express');
 const authRoutes = require('./auth-routes');
 const apiRoutes = require('./api/index');
 const accessTokenHandler = require('../middleware/access-token-handler');
-const csrfTokenCookieHandler = require('../middleware/csrf-token-handler');
-const sessionCookieHandler = require('../middleware/session-cookie-handler');
 
 const router = express.Router();
 
