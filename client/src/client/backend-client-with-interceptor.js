@@ -2,6 +2,7 @@ import axios from 'axios';
 import { util } from '../utils';
 import { backendService } from '../services';
 import {LS_KEY_ACCESS_TOKEN, LS_KEY_EXPIRES_AT, LS_KEY_REFRESH_TOKEN} from "../utils/constants";
+import {clearTokenData} from "../utils/util";
 
 const backendClientWithInterceptor = axios.create({
   baseURL: `https://${import.meta.env.VITE_APPLICATION_DOMAIN}/api`,
@@ -43,10 +44,6 @@ export async function tryRefreshToken( delay = 1000, retries = 2) {
 }
 
 
-
-
-
-
 export async function refreshIfExpired(config) {
     const accessToken = localStorage.getItem(LS_KEY_ACCESS_TOKEN);
     const refreshToken = localStorage.getItem(LS_KEY_REFRESH_TOKEN);
@@ -71,7 +68,7 @@ export async function refreshIfExpired(config) {
         return config;
     } catch (error) {
         console.error(`Failed to refresh token due to: ${error}`);
-        util.redirectToLogin();
+        clearTokenData();
     }
 
 }
