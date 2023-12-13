@@ -110,6 +110,10 @@ In the NodeJS server portion of the project, replace the following values locate
 - `DOMAIN_FORMAT`
 - `CLIENT_ID`
 
+#### Enable CORS configuration
+In the demo application setting, please update the following
+- Allowed Origins (CORS) : http://localhost:6001
+
 ### Run the application in "production" mode 
 
 Make sure you are in the root directory of this repository. 
