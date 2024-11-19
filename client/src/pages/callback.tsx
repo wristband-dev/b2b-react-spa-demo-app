@@ -1,9 +1,26 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { authCallback } from 'utils/util';
+import { auth } from 'utils';
 
 export function CallbackPage() {
+  const effectRan = useRef(false);
+
+  const handleCallback = async () => {
+    try {
+      await auth.callback();
+    } catch (error) {
+      console.log(`Error during auth callback: ${error}`);
+    }
+  };
+
   useEffect(() => {
-    authCallback();
-  });
+    if (effectRan.current === false) {
+      handleCallback();
+    }
+
+    //cleanup function
+    return () => {
+      effectRan.current = true; // this will be set to true on the initial unmount
+    };
+  }, []);
 }

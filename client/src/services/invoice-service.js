@@ -1,5 +1,5 @@
 import { apiClient } from 'client';
-import {util} from "../utils";
+import { util } from '../utils';
 
 export const fetchInvoices = async function (companyId) {
   const response = await apiClient.get(`/v1/companies/${companyId}/invoices`, util.bearerToken());

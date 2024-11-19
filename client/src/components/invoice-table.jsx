@@ -5,7 +5,7 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 
 import { ViewInvoiceDialog } from 'components';
 import { invoiceHooks, sessionHooks } from 'hooks';
-import { constants, util } from 'utils';
+import { util } from 'utils';
 
 export function InvoiceTable({ invoices = [] }) {
   const { data: role } = sessionHooks.useSessionRole();
@@ -35,7 +35,7 @@ export function InvoiceTable({ invoices = [] }) {
               <TableCell align="right">{invoice.invoiceNumber}</TableCell>
               <TableCell align="right">{invoice.customerName}</TableCell>
               <TableCell align="right">{'$ ' + invoice.totalDue}</TableCell>
-              <TableCell align="right">{util.toCapitalizedCase(invoice.status)}</TableCell>
+              <TableCell align="right">{invoice.status}</TableCell>
               <TableCell align="center">
                 {invoice.status !== 'CANCELLED' && (
                   <>
@@ -51,7 +51,7 @@ export function InvoiceTable({ invoices = [] }) {
                       aria-label="Cancel Invoice"
                       title="Cancel Invoice"
                       /* WRISTBAND_TOUCHPOINT - AUTHORIZATION */
-                      disabled={role.name !== constants.OWNER_ROLE}
+                      disabled={!util.isOwnerRole(role.name)}
                       onClick={() => cancelInvoice({ id: invoice.id, status: 'CANCELLED' })}
                     >
                       <DoNotDisturbIcon />

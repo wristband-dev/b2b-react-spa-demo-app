@@ -1,37 +1,27 @@
-import * as React from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { sessionService } from '../services';
-import { util } from '../utils';
+import { auth } from '../utils';
 
-const initialState = { isAuthenticated: false };
-const UPDATE_AUTH = 'UPDATE_AUTH';
-
-const AuthStateContext = React.createContext();
-const AuthDispatchContext = React.createContext();
-
-function AuthReducer(state, action) {
-  switch (action.type) {
-    case UPDATE_AUTH:
-      return { ...state, isAuthenticated: action.isAuthenticated };
-    default: {
-      throw new Error(`Unhandled action type: ${action.type}`);
-    }
-  }
-}
+const AuthContext = createContext({ isAuthenticated: false, isLoading: true });
 
 function AuthProvider({ children }) {
-  const [state, dispatch] = React.useReducer(AuthReducer, initialState);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const queryClient = useQueryClient();
 
-  const bootstrapSession = React.useCallback(async () => {
-    try {
+  // Bootstrap the application with the authenticated user's session data.
+  useEffect(() => {
+    const fetchSession = async () => {
       const isAuthenticated = sessionService.getAuthState();
+
       if (!isAuthenticated) {
-        util.redirectToLogin();
-      } else {
-        // We make one call to load all session data to reduce network requests, and then split up the
-        // results into separate cache keys since each key could read/write indepenently of each other.
+        await auth.login();
+        return;
+      }
+
+      try {
         const sessionData = await sessionService.getInitialSessionData();
         const { assignedRole, company, configs, user } = sessionData;
         queryClient.setQueryData(['session-user'], user);
@@ -39,47 +29,32 @@ function AuthProvider({ children }) {
         queryClient.setQueryData(['session-company'], company);
         queryClient.setQueryData(['session-configs'], configs);
 
-        dispatch({ type: UPDATE_AUTH, isAuthenticated: true });
+        setIsAuthenticated(true);
+        setIsLoading(false);
+      } catch (error) {
+        console.log(error);
+        await auth.logout();
       }
-    } catch (error) {
-      console.log(error);
-      util.redirectToLogout();
-    }
-  }, [queryClient]);
+    };
 
-  React.useEffect(() => {
-    bootstrapSession();
-  }, [bootstrapSession]);
+    fetchSession();
+  }, []);
 
   return (
-    <AuthStateContext.Provider value={state}>
-      <AuthDispatchContext.Provider value={dispatch}>{children}</AuthDispatchContext.Provider>
-    </AuthStateContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, isLoading }}>{children}</AuthContext.Provider>
   );
 }
 
-function useAuthState() {
-  const context = React.useContext(AuthStateContext);
+function useAuth() {
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuthState must be used within a AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }
 
-/*
- * If you want to make the auth context mutable, add this function to the exports list.  However, it is
- * highly advised for the auth context to remain immutable and adhere to a single-responsibility.
- */
-// function useAuthDispatch() {
-//   const context = React.useContext(AuthDispatchContext);
-//   if (context === undefined) {
-//     throw new Error('useAuthDispatch must be used within a AuthProvider');
-//   }
-//   return context;
-// }
-
 /* WRISTBAND_TOUCHPOINT - AUTHENTICATION */
 // React context responsbile for establishing that the user is authenticated and getting session data.
-// "AuthProvider" should wrap your App component to enable access to the "useAuthState" hook everywhere.
+// "AuthProvider" should wrap your App component to enable access to the "useAuth" hook everywhere.
 // That hook can then be used to protect App routes.
-export { AuthProvider, useAuthState };
+export { AuthProvider, useAuth };

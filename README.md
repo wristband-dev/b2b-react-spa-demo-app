@@ -1,3 +1,26 @@
+<div align="center">
+  <a href="https://wristband.dev">
+    <picture>
+      <img src="https://assets.wristband.dev/images/email_branding_logo_v1.png" alt="Github" width="297" height="64">
+    </picture>
+  </a>
+  <p align="center">
+    Enterprise-ready auth that is secure by default, truly multi-tenant, and ungated for small businesses.
+  </p>
+  <p align="center">
+    <b>
+      <a href="https://wristband.dev">Website</a> •
+      <a href="https://docs.wristband.dev">Documentation</a>
+    </b>
+  </p>
+</div>
+
+<br/>
+
+---
+
+<br/>
+
 # Invotastic for Business (React) -- A multi-tenant demo app
 
 "Invotastic for Business" is a multi-tenant demo app that serves other companies as its customers. This repo utilizes a "Single Page App" OAuth2 client type with React. There is also a NodeJS backend server with the ExpressJS web application framework for hosting Invotastic-specific APIs unrelated to Wristband. The Vite dev server will serve up the React single page application to the browser upon request.
@@ -107,8 +130,6 @@ In the React client portion of the project, replace the following values located
 
 In the NodeJS server portion of the project, replace the following values located in `server/.env`:
 - `APPLICATION_DOMAIN`
-- `DOMAIN_FORMAT`
-- `CLIENT_ID`
 
 #### Enable CORS configuration
 In the demo application setting, please update the following

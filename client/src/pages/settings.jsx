@@ -10,11 +10,11 @@ import {
   ProfileSettingsForm,
 } from 'components';
 import { sessionHooks } from 'hooks';
-import { constants } from 'utils';
+import { util } from '../utils';
 
 export function SettingsPage() {
-   const { data: role } = sessionHooks.useSessionRole();
-   const { data: sessionConfigs, error, isInitialLoading } = sessionHooks.useSessionConfigs();
+  const { data: role } = sessionHooks.useSessionRole();
+  const { data: sessionConfigs, error, isInitialLoading } = sessionHooks.useSessionConfigs();
 
   if (isInitialLoading) {
     return 'Loading...';
@@ -50,7 +50,7 @@ export function SettingsPage() {
             <AccountSettingsForm sessionConfigs={sessionConfigs} />
           </Grid>
           {/* WRISTBAND_TOUCHPOINT - AUTHORIZATION */}
-          {role.name === constants.OWNER_ROLE && (
+          {util.isOwnerRole(role.name) && (
             <>
               <Grid item xs={12} marginY={2}>
                 <CustomDivider />

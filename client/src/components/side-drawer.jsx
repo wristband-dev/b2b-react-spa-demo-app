@@ -7,10 +7,12 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { TouchpointBadge } from 'components';
+import { auth } from 'utils';
 
 const linkStyle = ({ theme }) => {
   return {
     color: theme.palette.primary.main,
+    cursor: 'pointer',
     display: 'flex',
     fontSize: '2rem',
     justifyContent: 'flex-start',
@@ -32,6 +34,10 @@ const StyledListItem = styled(ListItem)(({ theme }) => {
 export function SideDrawer() {
   const theme = useTheme();
   const [openDrawer, setOpenDrawer] = useState(false);
+
+  const redirectToLogout = async () => {
+    await auth.logout();
+  };
 
   return (
     <>
@@ -67,7 +73,7 @@ export function SideDrawer() {
                 anchor={{ vertical: 'bottom', horizontal: 'right' }}
                 sxStyle={{ bottom: '-20%', fontSize: '10px', height: '0.825rem', right: '20%', width: '7.75rem' }}
               >
-                <StyledExternalLink href={`${window.location.origin}/api/auth/logout`}>
+                <StyledExternalLink onClick={redirectToLogout}>
                   <LogoutIcon />
                   <Typography>Logout</Typography>
                 </StyledExternalLink>

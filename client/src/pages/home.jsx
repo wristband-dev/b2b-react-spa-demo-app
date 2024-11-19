@@ -4,8 +4,8 @@ import WarningIcon from '@mui/icons-material/Warning';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 import { CreateInvoiceDialog, InvoiceTable } from 'components';
-import { invoiceHooks, sessionHooks } from '../hooks';
-import { constants } from 'utils';
+import { invoiceHooks, sessionHooks } from 'hooks';
+import { util } from 'utils';
 
 export function HomePage() {
   const { data: role } = sessionHooks.useSessionRole();
@@ -61,7 +61,7 @@ export function HomePage() {
                 variant="contained"
                 fullWidth
                 /* WRISTBAND_TOUCHPOINT - AUTHORIZATION */
-                disabled={invoicesLeft === 0 || role.name !== constants.OWNER_ROLE}
+                disabled={invoicesLeft === 0 || !util.isOwnerRole(role.name)}
                 onClick={() => setShowCreateInvoice(true)}
               >
                 NEW INVOICE

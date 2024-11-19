@@ -7,7 +7,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import { TouchpointBadge, SideDrawer } from 'components';
 import { Logo } from 'images';
-import { util } from '../utils';
+import { auth } from '../utils';
 
 const linkStyle = ({ theme }) => {
   return {
@@ -35,6 +35,10 @@ const StyledRouterLink = styled(Link)(linkStyle);
 export function Navbar() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+  const redirectToLogout = async () => {
+    await auth.logout();
+  };
 
   return (
     <AppBar position="sticky">
@@ -64,7 +68,7 @@ export function Navbar() {
                 anchor={{ vertical: 'bottom', horizontal: 'left' }}
                 sxStyle={{ bottom: '-10%', fontSize: '10px', height: '1rem', left: '50%', width: '7.75rem' }}
               >
-                <StyledExternalLink onClick={() => util.redirectToLogout()}>
+                <StyledExternalLink onClick={redirectToLogout}>
                   <LogoutIcon />
                   <Typography>Logout</Typography>
                 </StyledExternalLink>

@@ -1,9 +1,8 @@
 'use strict';
 
-const apitopiaService = require('../services/wristband-service');
 const invotasticService = require('../services/invotastic-service');
-const { reqValidation } = require('../utils/validation');
-const { bearerToAccessToken, accessToBearerToken } = require('../utils/util')
+const wristbandService = require('../services/wristband-service');
+const { bearerToAccessToken, accessToBearerToken, reqValidation } = require('../utils/util');
 const {
   FORBIDDEN_ACCESS_RESPONSE,
   INVALID_REQUEST,
@@ -15,7 +14,7 @@ const {
 const { addressToTextBlock, hasAccessToApi } = require('../utils/util');
 
 exports.createInvoice = async (req, res, next) => {
-  const accessTokenHeader =  req.headers['authorization'];
+  const accessTokenHeader = req.headers.authorization;
   const accessToken = bearerToAccessToken(accessTokenHeader);
   try {
     reqValidation(req);
@@ -29,13 +28,16 @@ exports.createInvoice = async (req, res, next) => {
   try {
     /* WRISTBAND_TOUCHPOINT - AUTHORIZATION */
     // Ensure the user has permission to write invoice data
-    const currentPermissions = await apitopiaService.getPermissionInfo(requiredPermissions, accessToBearerToken(accessToken));
+    const currentPermissions = await wristbandService.getPermissionInfo(
+      requiredPermissions,
+      accessToBearerToken(accessToken)
+    );
     if (!hasAccessToApi(requiredPermissions, currentPermissions)) {
       return res.status(403).json(FORBIDDEN_ACCESS_RESPONSE);
     }
 
     /* WRISTBAND_TOUCHPOINT - RESOURCE API */
-    const existingCompany = await apitopiaService.getTenant(companyId, accessToBearerToken(accessToken));
+    const existingCompany = await wristbandService.getTenant(companyId, accessToBearerToken(accessToken));
     if (!existingCompany) {
       return res.status(400).json({ code: INVALID_REQUEST, message: 'Company could not be found.' });
     }
@@ -46,7 +48,7 @@ exports.createInvoice = async (req, res, next) => {
       fromEmail: invoiceEmail,
       fromAddress: addressToTextBlock(address),
       status: InvoiceStatus.SENT,
-      createdBy: "",
+      createdBy: '',
     });
     return res.status(201).json(createdInvoice);
   } catch (error) {
@@ -55,7 +57,7 @@ exports.createInvoice = async (req, res, next) => {
 };
 
 exports.updateInvoice = async (req, res, next) => {
-  const accessTokenHeader =  req.headers['authorization'];
+  const accessTokenHeader = req.headers.authorization;
   const accessToken = bearerToAccessToken(accessTokenHeader);
   try {
     reqValidation(req);
@@ -69,7 +71,10 @@ exports.updateInvoice = async (req, res, next) => {
   try {
     /* WRISTBAND_TOUCHPOINT - AUTHORIZATION */
     // Ensure the user has permission to write invoice data
-    const currentPermissions = await apitopiaService.getPermissionInfo(requiredPermissions, accessToBearerToken(accessToken));
+    const currentPermissions = await wristbandService.getPermissionInfo(
+      requiredPermissions,
+      accessToBearerToken(accessToken)
+    );
     if (!hasAccessToApi(requiredPermissions, currentPermissions)) {
       return res.status(403).json(FORBIDDEN_ACCESS_RESPONSE);
     }
@@ -86,9 +91,9 @@ exports.updateInvoice = async (req, res, next) => {
 };
 
 exports.getInvoicesByCompany = async (req, res, next) => {
-  const accessTokenHeader =  req.headers['authorization'];
+  const accessTokenHeader = req.headers.authorization;
   const accessToken = bearerToAccessToken(accessTokenHeader);
-  //console.log(`in ServerSide : getInvoicesByCompany accessToken:  ${accessToken}`);
+
   try {
     reqValidation(req);
   } catch (error) {
@@ -97,12 +102,15 @@ exports.getInvoicesByCompany = async (req, res, next) => {
 
   const { companyId } = req.params;
   const requiredPermissions = [INVOICE_READ_PERM];
-  //console.log(`getInvoicesByCompany: ${JSON.stringify(accessToBearerToken(accessToken))}`);
+
   try {
     /* WRISTBAND_TOUCHPOINT - AUTHORIZATION */
     // Ensure the user has permission to read invoice data
-    const currentPermissions = await apitopiaService.getPermissionInfo(requiredPermissions, accessToBearerToken(accessToken));
-    if (!hasAccessToApi(requiredPermissions, currentPermissions) ) {
+    const currentPermissions = await wristbandService.getPermissionInfo(
+      requiredPermissions,
+      accessToBearerToken(accessToken)
+    );
+    if (!hasAccessToApi(requiredPermissions, currentPermissions)) {
       return res.status(403).json(FORBIDDEN_ACCESS_RESPONSE);
     }
 

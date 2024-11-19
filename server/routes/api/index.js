@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+
 const invotasticRoutes = require('./invotastic-routes');
 
 const router = express.Router();

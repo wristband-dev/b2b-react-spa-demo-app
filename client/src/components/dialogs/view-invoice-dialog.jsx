@@ -39,10 +39,8 @@ export function ViewInvoiceDialog({ handleClose, invoice, open }) {
               <Grid container marginY="2rem">
                 <Grid item xs={6}>
                   <Typography variant="h6" fontWeight={600}>
-                    {company.name}
+                    {company.displayName}
                   </Typography>
-                  <Typography whiteSpace="pre-wrap">{invoice.fromAddress}</Typography>
-                  <Typography>{invoice.fromEmail}</Typography>
                 </Grid>
                 <Grid item xs={6} textAlign="right">
                   <Box component="img" sx={{ height: '5rem' }} alt="Icon" src={Icon} />
