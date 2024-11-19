@@ -1,11 +1,10 @@
 export * from './custom-divider';
-export { CreateInvoiceDialog, NewCompanyDialog, ViewInvoiceDialog } from './dialogs';
+export { CreateInvoiceDialog, ViewInvoiceDialog } from './dialogs';
 export {
   AccountSettingsForm,
   CompanySettingsForm,
   CreateInvoiceForm,
   InviteUserForm,
-  NewCompanyForm,
   ProfileSettingsForm,
 } from './forms';
 export * from './full-screen-spinner';

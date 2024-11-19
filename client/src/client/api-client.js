@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { util } from '../utils';
+import { auth } from '../utils';
 
 const apiClient = axios.create({
   baseURL: `${window.location.origin}/api`,
@@ -13,9 +13,9 @@ const apiClient = axios.create({
 // Any HTTP 401s should trigger the user to go log in again.  This happens when their
 // session cookie has expired and/or the CSRF cookie/header are missing in the request.
 // You can optionally catch HTTP 403s as well.
-const unauthorizedAccessInterceptor = (error) => {
+const unauthorizedAccessInterceptor = async (error) => {
   if (error.response && [401].includes(error.response.status)) {
-    util.redirectToLogin();
+    await auth.login();
   }
   return Promise.reject(error);
 };

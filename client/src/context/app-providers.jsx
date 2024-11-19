@@ -8,7 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { theme } from 'themes';
 import { AuthProvider } from 'context';
-import { LoginPage, CallbackPage} from 'pages';
+import { LoginPage, CallbackPage } from 'pages';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,12 +36,7 @@ export function AppProviders({ children }) {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/callback" element={<CallbackPage />} />
               {/* WRISTBAND_TOUCHPOINT - AUTHENTICATION */}
-              <Route
-                  path="*"
-                  element={
-                    <AuthProvider>{children}</AuthProvider>
-                  }
-              />
+              <Route path="*" element={<AuthProvider>{children}</AuthProvider>} />
             </Routes>
           </SnackbarProvider>
         </ThemeProvider>

@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { body, param } = require('express-validator');
+
 const { InvoiceStatus, InvoiceTerms } = require('../../utils/constants');
 const invotasticController = require('../../controllers/invotastic-controller');
 

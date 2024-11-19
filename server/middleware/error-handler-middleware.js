@@ -2,8 +2,8 @@
 
 const UNEXPECTED_ERROR = 'UNEXPECTED_ERROR';
 
-// Catch-all error handler
-const errorHandler = function (error, req, res) {
+// Catch-all error handler middleware
+const errorHandlerMiddleware = function (error, req, res) {
   console.error(error);
 
   const { stack } = error;
@@ -16,4 +16,4 @@ const errorHandler = function (error, req, res) {
     .json({ code: UNEXPECTED_ERROR, message: 'An unexpected error occurred on our end.  Please try again later.' });
 };
 
-module.exports = errorHandler;
+module.exports = errorHandlerMiddleware;
