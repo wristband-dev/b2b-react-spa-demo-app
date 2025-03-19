@@ -36,6 +36,10 @@ export function getAndClearLoginState() {
 //  SESSION STATE
 // //////////////////////////////////////////
 
+export function getTenantDomainName() {
+  return localStorage.getItem(LS_KEY_TENANT_DOMAIN_NAME);
+}
+
 export function getTokenData() {
   return {
     accessToken: localStorage.getItem(LS_KEY_ACCESS_TOKEN),
