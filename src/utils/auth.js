@@ -10,6 +10,7 @@ import {
   clearSessionData,
   getAndClearLoginState,
   getLogoutData,
+  getTenantDomainName,
   getTokenData,
   saveLoginState,
   saveSessionData,
@@ -20,6 +21,7 @@ import {
   createCryptoUniqueStr,
   isAccessTokenExpired,
   isValidDomainSuffix,
+  isValidReturnUrl,
   parseTenantDomainName,
   toQueryString,
 } from './util';
@@ -36,9 +38,9 @@ import { backendService } from '../services';
  */
 export async function login(returnUrl = '') {
   const query = new URL(window.location.href).searchParams;
-  const tenantDomainParam = query.get('tenant_domain');
   const returnUrlParam = query.get('return_url');
   const loginHint = query.get('login_hint');
+  const tenantDomain = query.get('tenant_domain') || getTenantDomainName();
 
   // Make sure domain is valid before attempting OAuth2 Auth Code flow for tenant-level login.
   if (!IS_LOCALHOST && !isValidDomainSuffix()) {
@@ -46,19 +48,24 @@ export async function login(returnUrl = '') {
     window.location.href = APPLICATION_LOGIN_URL;
     return;
   }
-  if (IS_LOCALHOST && !tenantDomainParam) {
-    console.error(`Tenant domain query param not found. Redirecting to application-level login.`);
+  if (IS_LOCALHOST && !tenantDomain) {
+    console.error(`Tenant domain name not found. Redirecting to application-level login.`);
     window.location.href = APPLICATION_LOGIN_URL;
     return;
   }
 
-  const tenantDomainName = IS_LOCALHOST ? tenantDomainParam : parseTenantDomainName(APPLICATION_DOMAIN);
+  const tenantDomainName = IS_LOCALHOST ? tenantDomain : parseTenantDomainName(APPLICATION_DOMAIN);
   const state = createCryptoUniqueStr();
   const codeVerifier = createCryptoUniqueStr();
   // Prioritize the query param over function arg, if present.
   const returnUrlToSave = returnUrlParam || returnUrl;
 
-  saveLoginState({ state, tenantDomainName, codeVerifier, returnUrl: returnUrlToSave || undefined });
+  saveLoginState({
+    state,
+    tenantDomainName,
+    codeVerifier,
+    returnUrl: isValidReturnUrl(returnUrlToSave) ? returnUrlToSave : undefined,
+  });
 
   const codeChallenge = await createCodeChallenge(codeVerifier);
   const queryParam = toQueryString({
@@ -151,7 +158,7 @@ export async function callback() {
 
   // Send the user back to the Invotastic application.
   const tenantDomain = IS_LOCALHOST ? '' : `${tenantDomainName}.`;
-  window.location.href = returnUrl || `http://${tenantDomain}${INVOTASTIC_HOST}/home`;
+  window.location.href = isValidReturnUrl(returnUrl) ? returnUrl : `http://${tenantDomain}${INVOTASTIC_HOST}/home`;
 }
 
 /**
