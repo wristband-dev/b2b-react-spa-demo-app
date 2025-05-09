@@ -3,7 +3,7 @@ import axios from 'axios';
 import { auth } from '../utils';
 
 const backendClientWithInterceptor = axios.create({
-  baseURL: `https://${import.meta.env.VITE_APPLICATION_DOMAIN}/api`,
+  baseURL: `https://${import.meta.env.VITE_APPLICATION_VANITY_DOMAIN}/api`,
 });
 
 /* WRISTBAND_TOUCHPOINT - AUTHENTICATION */
