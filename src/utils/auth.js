@@ -1,7 +1,6 @@
 import {
   APPLICATION_DOMAIN,
   CLIENT_ID,
-  IS_LOCALHOST,
   INVOTASTIC_HOST,
   AUTH_CALLBACK_URL,
   APPLICATION_LOGIN_URL,
@@ -20,9 +19,7 @@ import {
   createCodeChallenge,
   createCryptoUniqueStr,
   isAccessTokenExpired,
-  isValidDomainSuffix,
   isValidReturnUrl,
-  parseTenantDomainName,
   toQueryString,
 } from './util';
 import { backendService } from '../services';
@@ -43,18 +40,12 @@ export async function login(returnUrl = '') {
   const tenantDomain = query.get('tenant_domain') || getTenantDomainName();
 
   // Make sure domain is valid before attempting OAuth2 Auth Code flow for tenant-level login.
-  if (!IS_LOCALHOST && !isValidDomainSuffix()) {
-    console.error(`Invalid domain suffix. Redirecting to application-level login.`);
-    window.location.href = APPLICATION_LOGIN_URL;
-    return;
-  }
-  if (IS_LOCALHOST && !tenantDomain) {
+  if (!tenantDomain) {
     console.error(`Tenant domain name not found. Redirecting to application-level login.`);
     window.location.href = APPLICATION_LOGIN_URL;
     return;
   }
 
-  const tenantDomainName = IS_LOCALHOST ? tenantDomain : parseTenantDomainName(APPLICATION_DOMAIN);
   const state = createCryptoUniqueStr();
   const codeVerifier = createCryptoUniqueStr();
   // Prioritize the query param over function arg, if present.
@@ -62,7 +53,7 @@ export async function login(returnUrl = '') {
 
   saveLoginState({
     state,
-    tenantDomainName,
+    tenantDomainName: tenantDomain,
     codeVerifier,
     returnUrl: isValidReturnUrl(returnUrlToSave) ? returnUrlToSave : undefined,
   });
@@ -81,7 +72,7 @@ export async function login(returnUrl = '') {
   });
 
   // Redirect to the Wristband Authorize Endpoint to start the Login Flow
-  window.location.href = `https://${tenantDomainName}-${APPLICATION_DOMAIN}/api/v1/oauth2/authorize?${queryParam}`;
+  window.location.href = `https://${tenantDomain}-${APPLICATION_DOMAIN}/api/v1/oauth2/authorize?${queryParam}`;
 }
 
 /**
@@ -96,30 +87,20 @@ export async function callback() {
   const tenantDomainParam = query.get('tenant_domain');
 
   // Make sure domain is valid before attempting OAuth2 Auth Code flow for tenant-level login.
-  if (!IS_LOCALHOST && !isValidDomainSuffix()) {
-    console.error(`Invalid domain suffix. Redirecting to application-level login.`);
-    window.location.href = APPLICATION_LOGIN_URL;
-    return;
-  }
-  if (IS_LOCALHOST && !tenantDomainParam) {
+  if (!tenantDomainParam) {
     console.error(`Tenant domain query param not found. Redirecting to application-level login.`);
     window.location.href = APPLICATION_LOGIN_URL;
     return;
   }
 
   // Resolve the tenant domain name
-  const tenantDomainName = IS_LOCALHOST ? tenantDomainParam : parseTenantDomainName(APPLICATION_DOMAIN);
+  const tenantDomainName = tenantDomainParam;
   if (!tenantDomainName) {
-    const errorMessage = IS_LOCALHOST
-      ? 'Callback request is missing the [tenant_domain] query parameter from Wristband'
-      : 'Callback request URL is missing a tenant subdomain';
-    throw new Error(errorMessage);
+    throw new Error('Callback request is missing the [tenant_domain] query parameter from Wristband');
   }
 
   // Construct the tenant login URL in the event we have to redirect to login route
-  const tenantLoginUrl = IS_LOCALHOST
-    ? `http://${INVOTASTIC_HOST}/login?tenant_domain=${tenantDomainName}`
-    : `http://${tenantDomainName}.${INVOTASTIC_HOST}/login`;
+  const tenantLoginUrl = `http://${INVOTASTIC_HOST}/login?tenant_domain=${tenantDomainName}`;
 
   // Extract the login state
   const loginStateData = getAndClearLoginState();
@@ -157,8 +138,7 @@ export async function callback() {
   saveSessionData(tokenData, userinfo, tenantDomainName);
 
   // Send the user back to the Invotastic application.
-  const tenantDomain = IS_LOCALHOST ? '' : `${tenantDomainName}.`;
-  window.location.href = isValidReturnUrl(returnUrl) ? returnUrl : `http://${tenantDomain}${INVOTASTIC_HOST}/home`;
+  window.location.href = isValidReturnUrl(returnUrl) ? returnUrl : `http://${INVOTASTIC_HOST}/home`;
 }
 
 /**
@@ -170,14 +150,8 @@ export async function logout() {
   // Always destroy session data.
   clearSessionData();
 
-  if (IS_LOCALHOST) {
-    if (!tenantDomainName) {
-      console.error(`No session found. Redirecting to application-level login.`);
-      window.location = APPLICATION_LOGIN_URL;
-      return;
-    }
-  } else if (!isValidDomainSuffix()) {
-    console.error(`Invalid domain suffix. Redirecting to application-level login.`);
+  if (!tenantDomainName) {
+    console.error(`No session found. Redirecting to application-level login.`);
     window.location = APPLICATION_LOGIN_URL;
     return;
   }
@@ -193,8 +167,7 @@ export async function logout() {
   }
 
   // Redirect to the Wristband Logout Endpoint
-  const tenantDomain = IS_LOCALHOST ? tenantDomainName : parseTenantDomainName(APPLICATION_DOMAIN);
-  window.location.href = `https://${tenantDomain}-${APPLICATION_DOMAIN}/api/v1/logout?client_id=${CLIENT_ID}`;
+  window.location.href = `https://${tenantDomainName}-${APPLICATION_DOMAIN}/api/v1/logout?client_id=${CLIENT_ID}`;
 }
 
 /**

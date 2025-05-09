@@ -1,6 +1,6 @@
 import { sha256 } from 'js-sha256';
 
-import { INVOTASTIC_HOST, IS_LOCALHOST, LS_KEY_ACCESS_TOKEN, OWNER_ROLE_REGEX } from './constants';
+import { INVOTASTIC_HOST, LS_KEY_ACCESS_TOKEN, OWNER_ROLE_REGEX } from './constants';
 
 export function bearerToken() {
   if (!localStorage.getItem(LS_KEY_ACCESS_TOKEN)) {
@@ -30,24 +30,11 @@ export function isValidReturnUrl(returnUrl = '') {
   const port = url.port ? `:${url.port}` : '';
   const host = `${url.hostname}${port}`;
 
-  if (!IS_LOCALHOST && isValidDomainSuffix(host)) {
-    return true;
-  }
-  if (IS_LOCALHOST && host === INVOTASTIC_HOST) {
+  if (host === INVOTASTIC_HOST) {
     return true;
   }
 
   return false;
-}
-
-export function parseTenantDomainName() {
-  const { host } = window.location;
-  return host.substring(0, host.indexOf('.'));
-}
-
-export function isValidDomainSuffix(host = '') {
-  const hostToValidate = host || window.location.host;
-  return hostToValidate.substring(hostToValidate.indexOf('.') + 1) === INVOTASTIC_HOST;
 }
 
 /**
